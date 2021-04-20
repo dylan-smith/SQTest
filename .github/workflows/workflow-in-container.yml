@@ -1,0 +1,17 @@
+name: Workflow in Container
+on:
+  workflow_dispatch:
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    
+    container:
+      image: 108441289556.dkr.ecr.eu-west-1.amazonaws.com/dylansregistry:c2d77cb4b642389dc33c325fc6d2dc39e6d4d8a0
+      credentials:
+         username: AWS
+         password: ${{ secrets.ECR_LOGIN }}
+
+    steps:
+    - name: Send greeting
+      run: echo "Hello ${{ github.event.inputs.name }}"
