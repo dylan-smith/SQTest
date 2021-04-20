@@ -21,6 +21,7 @@ jobs:
         ECR_LOGIN=$(aws ecr get-login-password --region eu-west-1)
         echo "$ECR_LOGIN"
         echo "::set-output name=ecr_login::$ECR_LOGIN"
+        echo "::add-mask::$ECR_LOGIN"
     - name: Send greeting
       run: echo "${{ steps.ecr-login.outputs.ecr_login }}"
   build:
