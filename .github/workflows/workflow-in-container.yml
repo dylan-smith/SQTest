@@ -3,15 +3,25 @@ on:
   workflow_dispatch:
 
 jobs:
-  greet:
+  setup:
     runs-on: ubuntu-latest
     
-    container:
-      image: 108441289556.dkr.ecr.eu-west-1.amazonaws.com/dylansregistry:c2d77cb4b642389dc33c325fc6d2dc39e6d4d8a0
-      credentials:
-         username: AWS
-         password: ${{ secrets.ECR_LOGIN }}
+    steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-1
+    - name: set ECR login
+      id: ecr-login
+      run: |
+        ECR_LOGIN=$(aws ecr get-login-password --region eu-west-1)
+        echo "$ECR_LOGIN"
+        echo "::set-output name=ecr_login::$ECR_LOGIN"
+  build:
+    runs-on: ubuntu-latest
 
     steps:
     - name: Send greeting
-      run: echo "Hello ${{ github.event.inputs.name }}"
+      run: echo "${{ steps.ecr-login.outputs.ecr_login }}"
