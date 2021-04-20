@@ -5,6 +5,8 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    outputs:
+      ecr_login: ${{ steps.ecr-login.outputs.ecr_login }}
     
     steps:
     - name: Configure AWS credentials
@@ -19,9 +21,12 @@ jobs:
         ECR_LOGIN=$(aws ecr get-login-password --region eu-west-1)
         echo "$ECR_LOGIN"
         echo "::set-output name=ecr_login::$ECR_LOGIN"
+    - name: Send greeting
+      run: echo "${{ steps.ecr-login.outputs.ecr_login }}"
   build:
     runs-on: ubuntu-latest
+    needs: setup
 
     steps:
     - name: Send greeting
-      run: echo "${{ steps.ecr-login.outputs.ecr_login }}"
+      run: echo "${{ needs.setup.outputs.ecr_login }}"
