@@ -35,4 +35,4 @@ jobs:
 
     steps:
     - name: Send greeting
-      run: echo "${{ needs.setup.outputs.ecr_login }}"
+      run: echo "hello world"
